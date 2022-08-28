@@ -14,12 +14,15 @@
 	
     "license": "GPL-2.0-or-later",
 	
-	"system": "*",
+	"system": [
+		"windows_x86",
+		"windows_amd64"
+    ],
 	
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Farbigoz/sdk-mikron"
 	},
 	
-	"version": "0.1"
+	"version": "0.1.3"
   }

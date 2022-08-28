@@ -5,24 +5,51 @@ OUTPUT_ARCH(riscv)
 ENTRY(_start)
 
 
+_IRQ_ENTRY = 0xC0;
+_IRQ_HANDLER_LENGTH = 0x100;
+
+
+/*
 MEMORY {
   rom : ORIGIN = DEFINED(ROM_ORIGIN) ? ROM_ORIGIN : 0x00000000, LENGTH = DEFINED(ROM_ORIGIN) ? 32K : 8K
   ram : ORIGIN = 0x02000000, LENGTH = 16K
 }
+*/
+
+
+MEMORY {
+    startup : ORIGIN = 0x0,                                     LENGTH = _IRQ_ENTRY
+    irq     : ORIGIN = 0x0 + _IRQ_ENTRY,                        LENGTH = _IRQ_HANDLER_LENGTH
+    rom     : ORIGIN = 0x0 + _IRQ_ENTRY + _IRQ_HANDLER_LENGTH,  LENGTH = 8K - _IRQ_ENTRY - _IRQ_HANDLER_LENGTH
+    ram     : ORIGIN = 0x02000000,                              LENGTH = 16K
+}
+
 
 STACK_SIZE = 1024;
 
 CL_SIZE = 32;
 
 SECTIONS {
-    .text  : {
+    .startup : {
         PROVIDE(__TEXT_START__ = .);
-        *crt0.o(.text .text.*)
 
+        KEEP(*core_startup.o(.text));
+
+        . = ALIGN(_IRQ_ENTRY);
+    } >startup
+
+    .irq : {
+        KEEP(*core_irq.o(.text));
+
+        . = ALIGN(_IRQ_ENTRY + _IRQ_HANDLER_LENGTH);
+    } >irq
+
+    .main  : {
         *(.text)
         *(.text.*)
         *(.rodata)
-        *(.rodata.*)      
+        *(.rodata.*)
+
         . = ALIGN(CL_SIZE);
         PROVIDE(__TEXT_END__ = .);
     } >rom 

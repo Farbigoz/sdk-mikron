@@ -1,5 +1,5 @@
 {
-    "name": "MIKRON SDK",
+    "name": "sdk-mikron-npcprom",
 	
     "keywords": [
 		"mikron", 
@@ -14,11 +14,7 @@
 	
     "license": "GPL-2.0-or-later",
 	
-	"system": [
-		"windows",
-		"windows_x86",
-		"windows_amd64"
-	],
+	"system": "*",
 	
 	"repository": {
 		"type": "git",
